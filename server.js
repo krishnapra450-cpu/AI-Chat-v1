@@ -32,13 +32,21 @@ app.post("/chat", async (req, res) => {
           ],
         }),
       }
-    );
-
+      }
     const data = await response.json();
 
-    res.json({
-      reply: data.candidates[0].content.parts[0].text,
-    });
+console.log(data);
+
+if (!data.candidates) {
+  return res.status(500).json({
+    reply: JSON.stringify(data)
+  });
+}
+
+res.json({
+  reply: data.candidates[0].content.parts[0].text
+});
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({
