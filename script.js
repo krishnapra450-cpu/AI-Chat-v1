@@ -1,47 +1,47 @@
-
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
-function sendMessage() {
-    const text = userInput.value.trim();
+const API_URL = "https://ai-chat-backend-zhqr.onrender.com/chat";
 
-    if (text === "") return;
+async function sendMessage() {
+    const message = userInput.value.trim();
+
+    if (message === "") return;
 
     chatBox.innerHTML += `
-        <div class="user-message">${text}</div>
+        <div class="user-message">${message}</div>
     `;
 
     userInput.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-    let reply = getReply(text);
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        });
 
-    chatBox.innerHTML += `
-        <div class="bot-message">🤖 ${reply}</div>
-    `;
+        const data = await response.json();
+
+        chatBox.innerHTML += `
+            <div class="bot-message">${data.reply}</div>
+        `;
+
+    } catch (error) {
+        chatBox.innerHTML += `
+            <div class="bot-message">
+                ❌ Server se connect nahi ho paaya.
+            </div>
+        `;
+        console.error(error);
+    }
 
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function getReply(message) {
-    message = message.toLowerCase();
-
-    if (message.includes("hello") || message.includes("hi")) {
-        return "Hello! 👋";
-    }
-
-    if (message.includes("how are you")) {
-        return "I'm fine. 😊";
-    }
-
-    if (message.includes("name")) {
-        return "My name is My AI Assistant 🤖";
-    }
-
-    if (message.includes("bye")) {
-        return "Goodbye! 👋";
-    }
-
-    return "Sorry, I don't understand that yet.";
 }
 
 userInput.addEventListener("keypress", function(e) {
