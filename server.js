@@ -13,43 +13,36 @@ app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: message,
-                },
-              ],
-            },
-          ],
-        }),
-       });
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-3.1-8b-instruct:free",
+        messages: [
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      }),
+    });
+
     const data = await response.json();
 
-console.log(data);
+    if (data.error) {
+      return res.status(500).json(data);
+    }
 
-if (!data.candidates) {
-  return res.status(500).json({
-    reply: JSON.stringify(data)
-  });
-}
-
-res.json({
-  reply: data.candidates[0].content.parts[0].text
-});
-    
+    res.json({
+      reply: data.choices[0].message.content,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({
-      reply: "Error: Gemini response failed.",
+      reply: "Server Error",
     });
   }
 });
