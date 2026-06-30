@@ -146,3 +146,24 @@ window.onload = () => {
         newChatBtn.onclick = newChat;
     }
 };
+function deleteCurrentChat() {
+
+    if (chats.length === 1) {
+        alert("At least one chat is required.");
+        return;
+    }
+
+    if (!confirm("Delete this chat?")) {
+        return;
+    }
+
+    chats.splice(currentChat, 1);
+
+    if (currentChat >= chats.length) {
+        currentChat = chats.length - 1;
+    }
+
+    saveChats();
+    renderChatList();
+    renderMessages();
+}
