@@ -167,3 +167,27 @@ function deleteCurrentChat() {
     renderChatList();
     renderMessages();
 }
+function startVoice() {
+
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Voice input is not supported in this browser.");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        userInput.value = event.results[0][0].transcript;
+    };
+
+    recognition.onerror = function(event) {
+        console.log(event.error);
+    };
+
+}
