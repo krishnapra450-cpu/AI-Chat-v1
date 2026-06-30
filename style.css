@@ -150,3 +150,19 @@ body{
     font-size:22px;
 }
 }
+.delete-chat{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:20px;
+    border:none;
+    border-radius:10px;
+    background:#d93025;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.delete-chat:hover{
+    background:#b3261e;
+}
