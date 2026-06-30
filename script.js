@@ -3,54 +3,92 @@ const userInput = document.getElementById("user-input");
 
 const API_URL = "https://ai-chat-backend-zhqr.onrender.com/chat";
 
-// Chat History Load
-let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+// सभी Chats
+let chats = JSON.parse(localStorage.getItem("allChats")) || [];
 
-function renderChat() {
+// वर्तमान Chat
+let currentChat = 0;
+
+// पहली बार वेबसाइट खुली
+if (chats.length === 0) {
+    chats.push({
+        title: "Chat 1",
+        messages: [
+            {
+                type: "bot",
+                text: "👋 Hello! How can I assist you today?"
+            }
+        ]
+    });
+
+    localStorage.setItem("allChats", JSON.stringify(chats));
+}
+function saveChats() {
+    localStorage.setItem("allChats", JSON.stringify(chats));
+}
+
+function renderChatList() {
+    const chatList = document.getElementById("chat-list");
+    chatList.innerHTML = "";
+
+    chats.forEach((chat, index) => {
+        const div = document.createElement("div");
+        div.className = "chat-item" + (index === currentChat ? " active" : "");
+        div.innerText = chat.title;
+
+        div.onclick = () => {
+            currentChat = index;
+            renderChatList();
+            renderMessages();
+        };
+
+        chatList.appendChild(div);
+    });
+}
+
+function renderMessages() {
     chatBox.innerHTML = "";
 
-    if (chatHistory.length === 0) {
-        chatBox.innerHTML = `
-        <div class="bot-message">
-            👋 Hello! How can I help you today?
-        </div>`;
-    }
-
-    chatHistory.forEach(chat => {
+    chats[currentChat].messages.forEach(msg => {
         chatBox.innerHTML += `
-        <div class="${chat.type}-message">
-            ${chat.text}
-        </div>`;
+            <div class="${msg.type}-message">${msg.text}</div>
+        `;
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-renderChat();
+function newChat() {
+    chats.push({
+        title: "Chat " + (chats.length + 1),
+        messages: [
+            {
+                type: "bot",
+                text: "👋 Hello! How can I assist you today?"
+            }
+        ]
+    });
 
+    currentChat = chats.length - 1;
+
+    saveChats();
+    renderChatList();
+    renderMessages();
+}
 async function sendMessage() {
-
     const message = userInput.value.trim();
 
-    if (!message) return;
+    if (message === "") return;
 
-    chatHistory.push({
+    chats[currentChat].messages.push({
         type: "user",
         text: message
     });
 
-    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-
-    renderChat();
-
     userInput.value = "";
 
-    chatBox.innerHTML += `
-    <div class="bot-message" id="typing">
-        🤖 Typing...
-    </div>`;
-
-    chatBox.scrollTop = chatBox.scrollHeight;
+    renderMessages();
+    saveChats();
 
     try {
 
@@ -66,44 +104,40 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        document.getElementById("typing").remove();
-
-        chatHistory.push({
+        chats[currentChat].messages.push({
             type: "bot",
             text: data.reply
         });
 
-        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        saveChats();
+        renderMessages();
 
-        renderChat();
+    } catch (error) {
 
-    } catch (err) {
-
-        document.getElementById("typing").remove();
-
-        chatHistory.push({
+        chats[currentChat].messages.push({
             type: "bot",
-            text: "❌ Server Error"
+            text: "❌ Server se connect nahi ho paaya."
         });
 
-        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        saveChats();
+        renderMessages();
 
-        renderChat();
-
-        console.log(err);
+        console.error(error);
     }
-
 }
 
-userInput.addEventListener("keypress", function(e){
-    if(e.key==="Enter"){
+userInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
         sendMessage();
     }
 });
 
-// Chat Clear Function
-function clearChat(){
-    localStorage.removeItem("chatHistory");
-    chatHistory = [];
-    renderChat();
-}
+window.onload = () => {
+    renderChatList();
+    renderMessages();
+
+    const newChatBtn = document.querySelector(".new-chat");
+    if (newChatBtn) {
+        newChatBtn.onclick = newChat;
+    }
+};
