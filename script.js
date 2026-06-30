@@ -94,7 +94,7 @@ if (chats[currentChat].title.startsWith("Chat")) {
 
     renderMessages();
     saveChats();
-
+renderChatList();
     try {
 
         const response = await fetch(API_URL, {
