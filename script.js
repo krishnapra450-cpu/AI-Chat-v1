@@ -1,4 +1,4 @@
-const chatBox = document.getElementById("chat-box");
+pconst chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
 const API_URL = "https://ai-chat-backend-zhqr.onrender.com/chat";
@@ -113,7 +113,7 @@ renderChatList();
             type: "bot",
             text: data.reply
         });
-
+speak(data.reply);
         saveChats();
         renderMessages();
 
@@ -190,4 +190,16 @@ function startVoice() {
         console.log(event.error);
     };
 
+}
+function speak(text) {
+
+    speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    speechSynthesis.speak(speech);
 }
