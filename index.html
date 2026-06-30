@@ -20,7 +20,12 @@
         <button class="delete-chat" onclick="deleteCurrentChat()">
             🗑️ Delete Chat
         </button>
-
+<input
+    id="search-chat"
+    type="text"
+    placeholder="🔍 Search chat..."
+    onkeyup="searchChats()"
+/>
         <div id="chat-list"></div>
 
     </div>
