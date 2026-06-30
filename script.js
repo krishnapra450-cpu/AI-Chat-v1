@@ -3,27 +3,37 @@ const userInput = document.getElementById("user-input");
 
 const API_URL = "https://ai-chat-backend-zhqr.onrender.com/chat";
 
+// Chat History Load
 let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
 
-// पुरानी चैट दिखाओ
-window.onload = () => {
+function renderChat() {
+    chatBox.innerHTML = "";
+
+    if (chatHistory.length === 0) {
+        chatBox.innerHTML = `
+        <div class="bot-message">
+            👋 Hello! How can I help you today?
+        </div>`;
+    }
+
     chatHistory.forEach(chat => {
-        if (chat.type === "user") {
-            chatBox.innerHTML += `<div class="user-message">${chat.text}</div>`;
-        } else {
-            chatBox.innerHTML += `<div class="bot-message">${chat.text}</div>`;
-        }
+        chatBox.innerHTML += `
+        <div class="${chat.type}-message">
+            ${chat.text}
+        </div>`;
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
-};
+}
+
+renderChat();
 
 async function sendMessage() {
+
     const message = userInput.value.trim();
 
-    if (message === "") return;
+    if (!message) return;
 
-    // User Message
     chatHistory.push({
         type: "user",
         text: message
@@ -31,20 +41,19 @@ async function sendMessage() {
 
     localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 
-    chatBox.innerHTML += `
-        <div class="user-message">${message}</div>
-    `;
+    renderChat();
 
     userInput.value = "";
+
+    chatBox.innerHTML += `
+    <div class="bot-message" id="typing">
+        🤖 Typing...
+    </div>`;
+
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Typing...
-    const typingDiv = document.createElement("div");
-    typingDiv.className = "bot-message";
-    typingDiv.innerText = "🤖 Typing...";
-    chatBox.appendChild(typingDiv);
-
     try {
+
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {
@@ -57,7 +66,7 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        typingDiv.remove();
+        document.getElementById("typing").remove();
 
         chatHistory.push({
             type: "bot",
@@ -66,28 +75,35 @@ async function sendMessage() {
 
         localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 
-        chatBox.innerHTML += `
-            <div class="bot-message">${data.reply}</div>
-        `;
+        renderChat();
 
-    } catch (error) {
+    } catch (err) {
 
-        typingDiv.remove();
+        document.getElementById("typing").remove();
 
-        chatBox.innerHTML += `
-            <div class="bot-message">
-                ❌ Server se connect nahi ho paaya.
-            </div>
-        `;
+        chatHistory.push({
+            type: "bot",
+            text: "❌ Server Error"
+        });
 
-        console.error(error);
+        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+
+        renderChat();
+
+        console.log(err);
     }
 
-    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-userInput.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
+userInput.addEventListener("keypress", function(e){
+    if(e.key==="Enter"){
         sendMessage();
     }
 });
+
+// Chat Clear Function
+function clearChat(){
+    localStorage.removeItem("chatHistory");
+    chatHistory = [];
+    renderChat();
+}
