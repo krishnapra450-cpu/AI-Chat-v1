@@ -13,33 +13,15 @@
 
     <div class="sidebar">
 
-        <button class="new-chat">
-            ➕ New Chat
-        </button>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My AI</title>
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="app">
-
-    <div class="sidebar">
-
-        <button class="new-chat">
+        <button class="new-chat" onclick="newChat()">
             ➕ New Chat
         </button>
 
-        <div id="chat-list">
-            <div class="chat-item active">
-                💬 Chat 1
-            </div>
-        </div>
+        <button class="delete-chat" onclick="deleteCurrentChat()">
+            🗑️ Delete Chat
+        </button>
+
+        <div id="chat-list"></div>
 
     </div>
 
@@ -49,13 +31,7 @@
             🤖 My AI Assistant
         </div>
 
-        <div id="chat-box" class="chat-box">
-
-            <div class="bot-message">
-                👋 Hello! How can I help you today?
-            </div>
-
-        </div>
+        <div id="chat-box" class="chat-box"></div>
 
         <div class="input-area">
 
@@ -65,61 +41,9 @@
                 placeholder="Ask anything..."
             >
 
-            <button onclick="sendMessage()">
-                Send
-            </button>
+            <button onclick="sendMessage()">Send</button>
 
-            <button onclick="startVoice()">
-                🎤
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-<script src="script.js"></script>
-
-</body>
-</html>
-        <div id="chat-list">
-            <div class="chat-item active">
-                💬 Chat 1
-            </div>
-        </div>
-
-    </div>
-
-    <div class="main">
-
-        <div class="header">
-            🤖 My AI Assistant
-        </div>
-
-        <div id="chat-box" class="chat-box">
-
-            <div class="bot-message">
-                👋 Hello! How can I help you today?
-            </div>
-
-        </div>
-
-        <div class="input-area">
-
-            <input
-                id="user-input"
-                type="text"
-                placeholder="Ask anything..."
-            >
-
-            <button onclick="sendMessage()">
-                Send
-            </button>
-
-            <button onclick="startVoice()">
-                🎤
-            </button>
+            <button onclick="startVoice()">🎤</button>
 
         </div>
 
