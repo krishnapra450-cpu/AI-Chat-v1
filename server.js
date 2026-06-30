@@ -55,3 +55,23 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+function searchChats() {
+
+    const search = document
+        .getElementById("search-chat")
+        .value
+        .toLowerCase();
+
+    const chatItems = document.querySelectorAll(".chat-item");
+
+    chatItems.forEach(item => {
+
+        if (item.innerText.toLowerCase().includes(search)) {
+            item.style.display = "";
+        } else {
+            item.style.display = "none";
+        }
+
+    });
+
+}
