@@ -84,7 +84,12 @@ async function sendMessage() {
         type: "user",
         text: message
     });
-
+if (chats[currentChat].title.startsWith("Chat")) {
+    chats[currentChat].title =
+        message.length > 25
+            ? message.substring(0, 25) + "..."
+            : message;
+}
     userInput.value = "";
 
     renderMessages();
