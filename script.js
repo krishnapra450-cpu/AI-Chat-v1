@@ -1,4 +1,4 @@
-pconst chatBox = document.getElementById("chat-box");
+const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
 const API_URL = "https://ai-chat-backend-zhqr.onrender.com/chat";
