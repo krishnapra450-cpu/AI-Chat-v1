@@ -142,10 +142,6 @@ window.onload = () => {
     renderChatList();
     renderMessages();
 
-    speechSynthesis.speak(
-        new SpeechSynthesisUtterance("Hello Krishna")
-    );
-
     const newChatBtn = document.querySelector(".new-chat");
     if (newChatBtn) {
         newChatBtn.onclick = newChat;
