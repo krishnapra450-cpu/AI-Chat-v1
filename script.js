@@ -210,5 +210,14 @@ function speak(text) {
     speech.rate = 1;
     speech.pitch = 1;
 
+    speech.onend = function() {
+
+        if (voiceMode) {
+            startVoice();
+        }
+
+    };
+
     speechSynthesis.speak(speech);
+
 }
