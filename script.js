@@ -8,7 +8,8 @@ let chats = JSON.parse(localStorage.getItem("allChats")) || [];
 
 // वर्तमान Chat
 let currentChat = 0;
-
+let voiceMode = false;
+let recognition;
 // पहली बार वेबसाइट खुली
 if (chats.length === 0) {
     chats.push({
