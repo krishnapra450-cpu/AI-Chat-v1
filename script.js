@@ -173,11 +173,13 @@ function deleteCurrentChat() {
 function startVoice() {
 
     if (!('webkitSpeechRecognition' in window)) {
-        alert("Voice input is not supported in this browser.");
+        alert("Voice input is not supported.");
         return;
     }
 
-    const recognition = new webkitSpeechRecognition();
+    voiceMode = true;
+
+    recognition = new webkitSpeechRecognition();
 
     recognition.lang = "en-IN";
     recognition.interimResults = false;
@@ -186,7 +188,11 @@ function startVoice() {
     recognition.start();
 
     recognition.onresult = function(event) {
+
         userInput.value = event.results[0][0].transcript;
+
+        sendMessage();
+
     };
 
     recognition.onerror = function(event) {
